@@ -3,6 +3,8 @@ import { isSupabaseConfigured } from "./config";
 import { createSupabasePublicClient } from "./server";
 import type { Activity, Profile, Project, SocialLink } from "./types";
 
+const cacheOptions = { revalidate: 300, tags: ["portfolio"] };
+
 const cachedPortfolio = unstable_cache(
   async () => {
     const supabase = await createSupabasePublicClient();
@@ -31,7 +33,66 @@ const cachedPortfolio = unstable_cache(
     };
   },
   ["portfolio-public-content"],
-  { revalidate: 30, tags: ["portfolio"] },
+  cacheOptions,
+);
+
+const cachedProfile = unstable_cache(
+  async () => {
+    const supabase = await createSupabasePublicClient();
+    const { data, error } = await supabase
+      .from("profile")
+      .select("*")
+      .eq("id", true)
+      .maybeSingle();
+    if (error) throw new Error(`Could not load portfolio profile: ${error.message}`);
+    return (data as Profile | null) ?? null;
+  },
+  ["portfolio-profile"],
+  cacheOptions,
+);
+
+const cachedProjects = unstable_cache(
+  async () => {
+    const supabase = await createSupabasePublicClient();
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .order("sort_order")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(`Could not load projects: ${error.message}`);
+    return (data as Project[]) ?? [];
+  },
+  ["portfolio-projects"],
+  cacheOptions,
+);
+
+const cachedActivities = unstable_cache(
+  async () => {
+    const supabase = await createSupabasePublicClient();
+    const { data, error } = await supabase
+      .from("activities")
+      .select("*")
+      .order("sort_order")
+      .order("start_date", { ascending: false });
+    if (error) throw new Error(`Could not load activities: ${error.message}`);
+    return (data as Activity[]) ?? [];
+  },
+  ["portfolio-activities"],
+  cacheOptions,
+);
+
+const cachedSocialLinks = unstable_cache(
+  async () => {
+    const supabase = await createSupabasePublicClient();
+    const { data, error } = await supabase
+      .from("social_links")
+      .select("*")
+      .order("sort_order");
+    if (error) throw new Error(`Could not load social links: ${error.message}`);
+    return (data as SocialLink[]) ?? [];
+  },
+  ["portfolio-social-links"],
+  cacheOptions,
 );
 
 export async function getPortfolioContent() {
@@ -39,6 +100,26 @@ export async function getPortfolioContent() {
     return { profile: null, socialLinks: [], projects: [], activities: [] };
   }
   return cachedPortfolio();
+}
+
+export async function getPortfolioProfile() {
+  if (!isSupabaseConfigured) return null;
+  return cachedProfile();
+}
+
+export async function getPortfolioProjects() {
+  if (!isSupabaseConfigured) return [];
+  return cachedProjects();
+}
+
+export async function getPortfolioActivities() {
+  if (!isSupabaseConfigured) return [];
+  return cachedActivities();
+}
+
+export async function getPortfolioSocialLinks() {
+  if (!isSupabaseConfigured) return [];
+  return cachedSocialLinks();
 }
 
 const cachedProjectBySlug = unstable_cache(
@@ -53,7 +134,7 @@ const cachedProjectBySlug = unstable_cache(
     return (data as Project | null) ?? null;
   },
   ["portfolio-project-by-slug"],
-  { revalidate: 30, tags: ["portfolio"] },
+  cacheOptions,
 );
 
 export async function getProjectBySlug(slug: string) {

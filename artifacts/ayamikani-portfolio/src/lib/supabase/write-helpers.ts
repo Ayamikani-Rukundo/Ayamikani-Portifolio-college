@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { createSupabaseServerClient } from "./server";
 
 export type ActionResult =
@@ -39,7 +39,7 @@ export async function runAuthenticatedWrite(
     const { error } = await operation(supabase);
     if (error) return { ok: false, error: error.message };
 
-    revalidateTag("portfolio", "max");
+    updateTag("portfolio");
     return { ok: true };
   } catch (error) {
     return {

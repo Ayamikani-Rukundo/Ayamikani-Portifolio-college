@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { createSocialLink, updateSocialLink, deleteSocialLink, createProject, updateProject, deleteProject, createActivity, updateActivity, deleteActivity } from "@/app/actions/portfolio";
 import { uploadPortfolioFile } from "@/lib/supabase/client";
 import { ACTIVITY_CATEGORIES, type Activity, type ActivityInput, type Project, type ProjectInput, type SocialLink, type SocialLinkInput } from "@/lib/supabase/types";
@@ -11,12 +12,16 @@ const blank=(resource:Resource):Record<string,any>=> resource==="social-links" ?
 const labels={"social-links":"Social links",projects:"Projects",activities:"Activities"};
 
 export default function ContentManager({resource,initial,startOpen=false}:{resource:Resource;initial:Row[];startOpen?:boolean}) {
-  const [items,setItems]=useState<Row[]>(initial); const [editing,setEditing]=useState<Row|null>(null); const [creating,setCreating]=useState(startOpen); const [pending,setPending]=useState(false); const [message,setMessage]=useState(""); const [error,setError]=useState("");
+  const router = useRouter();
+  const [items,setItems]=useState<Row[]>(initial); const [editing,setEditing]=useState<Row|null>(null); const [creating,setCreating]=useState(startOpen); const [pending,setPending]=useState(false); const [deleting,setDeleting]=useState<string|null>(null); const [message,setMessage]=useState(""); const [error,setError]=useState("");
+  useEffect(()=>setItems(initial),[initial]);
   function startCreate(){setEditing(null);setCreating(true);setError("");setMessage("");}
   function startEdit(item:Row){setEditing(item);setCreating(false);setError("");setMessage("");}
   async function onDelete(item:Row){const name=("title" in item?item.title:item.label); if(!window.confirm(`Delete “${name}”? This cannot be undone.`))return;
+    setDeleting(item.id);
     const result=resource==="projects"?await deleteProject(item.id):resource==="activities"?await deleteActivity(item.id):await deleteSocialLink(item.id);
     if(result.ok){setItems(items.filter(row=>row.id!==item.id));setMessage("Item deleted.");}else setError(result.error);
+    setDeleting(null);
   }
   async function save(data:Record<string,any>){
     setPending(true);setError("");setMessage("");
@@ -35,7 +40,7 @@ export default function ContentManager({resource,initial,startOpen=false}:{resou
       if(result.ok&&editing){setItems(items.map(i=>i.id===editing.id?({...editing,...input} as Row):i));}
     }
     setPending(false);
-    if(result?.ok){setMessage(editing?"Changes saved.":"Item created.");setEditing(null);setCreating(false);if(!editing)window.setTimeout(()=>window.location.reload(),700);}else setError(result?.error||"Could not save this item.");
+    if(result?.ok){setMessage(editing?"Changes saved.":"Item created.");setEditing(null);setCreating(false);if(!editing)router.refresh();}else setError(result?.error||"Could not save this item.");
   }
   const showForm=creating||!!editing;
   return <div className="admin-content">
@@ -47,7 +52,7 @@ export default function ContentManager({resource,initial,startOpen=false}:{resou
       {"cover_image_url" in item ? <PortfolioImage className="preview-image" src={item.cover_image_url} alt={`${item.title} cover`}/> : "image_url" in item ? <PortfolioImage className="preview-image" src={item.image_url} alt={`${item.title} image`}/> : null}
       <div className="admin-row-main"><strong>{"title" in item?item.title:item.label}</strong><small>{"slug" in item?`/${item.slug}`:"organization" in item?[item.role,item.organization,item.category].filter(Boolean).join(" · "):item.url}</small></div>
       {("featured" in item&&item.featured)&&<span className="category-tag">Featured</span>}
-      <div className="admin-actions"><button className="mini-button" onClick={()=>startEdit(item)}>Edit</button><button className="mini-button danger" onClick={()=>void onDelete(item)}>Delete</button></div>
+      <div className="admin-actions"><button className="mini-button" disabled={!!deleting} onClick={()=>startEdit(item)}>Edit</button><button className="mini-button danger" disabled={!!deleting} onClick={()=>void onDelete(item)}>{deleting===item.id?"Deleting…":"Delete"}</button></div>
     </div>)}</div>:!showForm&&<div className="empty-note"><strong>No {labels[resource].toLowerCase()} yet.</strong>This list is intentionally empty. Add the first item when you’re ready to share it publicly.</div>}
   </div>;
 }

@@ -20,10 +20,10 @@ export default async function HomePage() {
   const activities = content.activities
     .filter((activity) => activity.featured)
     .slice(0, 3);
-  return <PublicFrame path="/" socialLinks={content.socialLinks}>
+  return <PublicFrame path="/" socialLinks={content.socialLinks} avatarUrl={content.profile?.avatar_url}>
     <section className="shell hero">
-      <div className="hero-copy"><div className="eyebrow">{name}</div>
-        <h1>Ideas with<br/><em>people</em> in mind.</h1>
+      <div className="hero-copy"><div className="eyebrow">PERSONAL PORTFOLIO <span aria-hidden="true">/</span> RWANDA</div>
+        <h1><span className="hero-name">{name}</span><span className="hero-statement">Building with<br/><em>people</em> in mind.</span></h1>
         <p className="hero-headline">{headline}</p>
         <p className="hero-description">{bio}</p>
         <div className="hero-actions"><Link href="/projects" className="button primary">See what I’m building <ArrowUpRight size={15}/></Link><Link href="/about" className="button text-button">A little about me <ArrowDownRight size={15}/></Link></div>

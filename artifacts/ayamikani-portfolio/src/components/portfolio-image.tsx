@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 const palettes = [
-  "linear-gradient(140deg, #a59bd7, #e9abc1 52%, #efc950)",
-  "linear-gradient(140deg, #b9dec9, #235bd4 55%, #a59bd7)",
-  "linear-gradient(140deg, #efc950, #ed735d 52%, #e9abc1)",
-  "linear-gradient(140deg, #235bd4, #a59bd7 55%, #b9dec9)",
+  "linear-gradient(140deg, #aa8be5, #ef9eb9 52%, #f2c56b)",
+  "linear-gradient(140deg, #a5dbc6, #7045b8 55%, #e87532)",
+  "linear-gradient(140deg, #f2c56b, #e87532 52%, #ef9eb9)",
+  "linear-gradient(140deg, #7045b8, #aa8be5 55%, #a5dbc6)",
 ];
 
 export default function PortfolioImage({

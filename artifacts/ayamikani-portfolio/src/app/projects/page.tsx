@@ -7,8 +7,8 @@ import PortfolioImage from "@/components/portfolio-image";
 
 export default async function ProjectsPage() {
   if (!isSupabaseConfigured) return <SetupNeeded />;
-  const { projects, socialLinks } = await getPortfolioContent();
-  return <PublicFrame path="/projects" socialLinks={socialLinks}>
+  const { profile, projects, socialLinks } = await getPortfolioContent();
+  return <PublicFrame path="/projects" socialLinks={socialLinks} avatarUrl={profile?.avatar_url}>
     <div className="shell page-hero"><div><div className="eyebrow">An open workbench</div><h1 className="page-title">Projects<br/><em className="serif">in practice.</em></h1></div><p className="page-lede">Things I’ve made, questions I’ve followed, and ideas still getting their shape. The process matters as much as the polish.</p></div>
     <section className="shell section" style={{paddingTop:10}}>{projects.length ? <div className="project-grid">{projects.map((project,index)=><Link href={`/projects/${project.slug}`} className="project-card" key={project.id}>
       <PortfolioImage src={project.cover_image_url} alt={`${project.title} cover`} className="project-grid-image" tone={index}/>

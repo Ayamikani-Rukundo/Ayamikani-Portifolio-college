@@ -31,11 +31,10 @@ export async function proxy(request: NextRequest) {
       },
     },
   });
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: verifiedToken, error: authError } =
+    await supabase.auth.getClaims();
 
-  if (!user) {
+  if (authError || !verifiedToken?.claims.sub) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
     loginUrl.searchParams.set("next", pathname);
