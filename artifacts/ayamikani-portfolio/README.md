@@ -49,7 +49,11 @@ Keep the repository's `pnpm-workspace.yaml` and `pnpm-lock.yaml` at the root so 
 
 ## Content management
 
-Sign in at `/admin/login` to manage the profile, social links, projects, and activities. Uploaded images and the optional resume are stored in Supabase Storage's public `portfolio` bucket. Public content is read through the anon key under RLS and refreshed after admin edits.
+Sign in at `/admin/login` to manage the profile, social links, projects, and activities. Uploaded images and the optional resume are stored in Supabase Storage's public `portfolio` bucket. Profile and portfolio table changes are broadcast through Supabase Realtime, so edits made in the admin or directly in Supabase refresh open portfolio pages automatically. The application reads these tables directly rather than caching them for several minutes.
+
+To prefill the portfolio with the prepared public biography, projects, activities, and awards, run [`supabase/seed-content.sql`](supabase/seed-content.sql) in the Supabase SQL Editor after `supabase/schema.sql`. The seed preserves existing non-empty profile fields and does not overwrite existing projects or activities. It deliberately leaves contact details, live links, and images for you to add; it includes links to verified public GitHub repositories. Both SQL scripts enable Supabase Realtime for the portfolio tables, so the seed script can also be rerun on an existing project to enable live updates without duplicating its content.
+
+After updating the deployed application and applying the SQL changes, keep the site open while making a change in the admin or Supabase. Other open tabs refresh automatically; if Supabase Realtime disconnects, the site displays a refresh notice.
 
 The site starts in dark mode. Use the theme control in the public navigation or admin header to switch to light mode; the choice is saved in the current browser.
 

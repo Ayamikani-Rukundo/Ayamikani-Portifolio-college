@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { saveProfile } from "@/app/actions/portfolio";
 import { uploadPortfolioFile } from "@/lib/supabase/client";
@@ -9,8 +9,10 @@ import PortfolioImage from "@/components/portfolio-image";
 const blank: ProfileInput = { full_name:"Ayamikani Rukundo Emmanuel", headline:"", short_bio:"", long_bio:"", location:"", email:"", avatar_url:"", resume_url:"" };
 export default function ProfileEditor({ profile }: { profile: Profile | null }) {
   const [value,setValue]=useState<ProfileInput>(profile ? {...profile} : blank);
+  const [dirty,setDirty]=useState(false);
   const [pending,setPending]=useState(false); const [message,setMessage]=useState(""); const [error,setError]=useState("");
-  function change(key:keyof ProfileInput,val:string){setValue(old=>({...old,[key]:val}));}
+  useEffect(()=>{if(!dirty)setValue(profile ? {...profile} : blank);},[profile]);
+  function change(key:keyof ProfileInput,val:string){setDirty(true);setValue(old=>({...old,[key]:val}));}
   async function upload(key:"avatar_url"|"resume_url",file?:File) {
     if(!file)return; setError("");setMessage("Uploading file…");
     try{const url=await uploadPortfolioFile(file,"profile");change(key,url);setMessage("Upload complete. Save your profile to publish it.");}
@@ -18,7 +20,7 @@ export default function ProfileEditor({ profile }: { profile: Profile | null }) 
   }
   async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setPending(true);setError("");setMessage("");
     const result=await saveProfile(value);setPending(false);
-    if(result.ok)setMessage("Profile saved. Your public portfolio will update shortly.");else setError(result.error);
+    if(result.ok){setDirty(false);setMessage("Profile saved. Your public portfolio will update shortly.");}else setError(result.error);
   }
   return <form className={pending?"saving":""} onSubmit={submit}>
     {error&&<div className="status-message error" role="alert">{error}</div>}{message&&<div className="status-message" role="status">{message}</div>}

@@ -60,6 +60,7 @@ export type ActivityInput = Omit<Activity, "id" | "created_at">;
 
 export const ACTIVITY_CATEGORIES = [
   "Leadership",
+  "Robotics",
   "Coding",
   "Entrepreneurship",
   "Community Service",
