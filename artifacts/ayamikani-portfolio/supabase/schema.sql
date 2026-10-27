@@ -10,8 +10,10 @@ create table if not exists public.profile (
   short_bio text not null default '',
   long_bio text not null default '',
   location text not null default '',
+  timezone text not null default 'Africa/Kigali',
   email text not null default '',
   avatar_url text not null default '',
+  about_image_url text not null default '',
   resume_url text not null default ''
 );
 

@@ -55,6 +55,8 @@ To prefill the portfolio with the prepared public biography, projects, activitie
 
 After updating the deployed application and applying the SQL changes, keep the site open while making a change in the admin or Supabase. Other open tabs refresh automatically; if Supabase Realtime disconnects, the site displays a refresh notice.
 
+For an existing Supabase project, run [`supabase/profile-contact-media-migration.sql`](supabase/profile-contact-media-migration.sql) to add the separate About-page portrait, editable time zone, and contact methods. It preserves any non-empty profile details and does not duplicate social links. The `avatar_url` remains the landing-page and navigation profile image; `about_image_url` is used on the About page, which falls back to the profile image until you upload a separate portrait.
+
 The site starts in dark mode. Use the theme control in the public navigation or admin header to switch to light mode; the choice is saved in the current browser.
 
 On the first full page visit in a browser session, a short animated opening screen appears once. Moving between pages does not replay it. Use the **Admin** button in the header to open the private sign-in page. Once an avatar is uploaded and saved in the admin profile, it replaces the initials mark in the public header/footer and admin workspace.

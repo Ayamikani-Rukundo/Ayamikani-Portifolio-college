@@ -5,8 +5,10 @@ export type Profile = {
   short_bio: string;
   long_bio: string;
   location: string;
+  timezone: string;
   email: string;
   avatar_url: string;
+  about_image_url: string;
   resume_url: string;
 };
 

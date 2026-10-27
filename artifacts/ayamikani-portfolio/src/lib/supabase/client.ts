@@ -12,7 +12,7 @@ export function createSupabaseBrowserClient() {
 
 export async function uploadPortfolioFile(
   file: File,
-  folder: "profile" | "projects" | "activities",
+  folder: "profile" | "about" | "projects" | "activities",
 ) {
   const maxSize = file.type === "application/pdf" ? 8 : 10;
   if (file.size > maxSize * 1024 * 1024) {

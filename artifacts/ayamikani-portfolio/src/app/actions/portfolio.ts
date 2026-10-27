@@ -26,6 +26,16 @@ function validSlug(value: string) {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
 }
 
+function validTimeZone(value: string) {
+  if (!value) return true;
+  try {
+    new Intl.DateTimeFormat("en", { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function validProfile(input: ProfileInput) {
   return (
     validText(input.full_name, 120) &&
@@ -34,10 +44,14 @@ function validProfile(input: ProfileInput) {
     validText(input.short_bio, 500) &&
     validText(input.long_bio, 10000) &&
     validText(input.location, 120) &&
+    validText(input.timezone, 80) &&
+    validTimeZone(input.timezone) &&
     validText(input.email, 254) &&
     validText(input.avatar_url, 2048) &&
+    validText(input.about_image_url, 2048) &&
     validText(input.resume_url, 2048) &&
     isHttpUrl(input.avatar_url) &&
+    isHttpUrl(input.about_image_url) &&
     isHttpUrl(input.resume_url)
   );
 }
