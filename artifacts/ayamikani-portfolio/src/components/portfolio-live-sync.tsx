@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
-const tables = ["profile", "social_links", "projects", "activities"] as const;
+const tables = [
+  "profile",
+  "social_links",
+  "projects",
+  "activities",
+  "certificates",
+  "gallery_items",
+] as const;
 
 export default function PortfolioLiveSync() {
   const router = useRouter();

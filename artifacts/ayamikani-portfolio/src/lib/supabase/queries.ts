@@ -1,7 +1,7 @@
 import { connection } from "next/server";
 import { isSupabaseConfigured } from "./config";
 import { createSupabasePublicClient } from "./server";
-import type { Activity, Profile, Project, SocialLink } from "./types";
+import type { Activity, Certificate, GalleryItem, Profile, Project, SocialLink } from "./types";
 
 export async function getPortfolioContent() {
   await connection();
@@ -89,6 +89,34 @@ export async function getPortfolioSocialLinks() {
     .order("sort_order");
   if (error) throw new Error(`Could not load social links: ${error.message}`);
   return (data as SocialLink[]) ?? [];
+}
+
+export async function getPortfolioCertificates() {
+  await connection();
+  if (!isSupabaseConfigured) return [];
+
+  const supabase = await createSupabasePublicClient();
+  const { data, error } = await supabase
+    .from("certificates")
+    .select("*")
+    .order("sort_order")
+    .order("issued_on", { ascending: false, nullsFirst: false });
+  if (error) throw new Error(`Could not load certificates: ${error.message}`);
+  return (data as Certificate[]) ?? [];
+}
+
+export async function getPortfolioGallery() {
+  await connection();
+  if (!isSupabaseConfigured) return [];
+
+  const supabase = await createSupabasePublicClient();
+  const { data, error } = await supabase
+    .from("gallery_items")
+    .select("*")
+    .order("sort_order")
+    .order("taken_at", { ascending: false, nullsFirst: false });
+  if (error) throw new Error(`Could not load gallery: ${error.message}`);
+  return (data as GalleryItem[]) ?? [];
 }
 
 export async function getProjectBySlug(slug: string) {

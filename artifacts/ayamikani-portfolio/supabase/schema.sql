@@ -60,10 +60,34 @@ create table if not exists public.activities (
   )
 );
 
+create table if not exists public.certificates (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  issuer text not null default '',
+  issued_on date,
+  description text not null default '',
+  file_url text not null,
+  credential_url text not null default '',
+  featured boolean not null default false,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.gallery_items (
+  id uuid primary key default gen_random_uuid(),
+  image_url text not null,
+  caption text not null default '',
+  taken_at date,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
 alter table public.profile enable row level security;
 alter table public.social_links enable row level security;
 alter table public.projects enable row level security;
 alter table public.activities enable row level security;
+alter table public.certificates enable row level security;
+alter table public.gallery_items enable row level security;
 
 drop policy if exists "Public can read profile" on public.profile;
 create policy "Public can read profile"
@@ -92,12 +116,28 @@ create policy "Public can read activities"
 drop policy if exists "Authenticated users can manage activities" on public.activities;
 create policy "Authenticated users can manage activities"
   on public.activities for all to authenticated using (true) with check (true);
+drop policy if exists "Public can read certificates" on public.certificates;
+create policy "Public can read certificates"
+  on public.certificates for select to anon, authenticated using (true);
+drop policy if exists "Authenticated users can manage certificates" on public.certificates;
+create policy "Authenticated users can manage certificates"
+  on public.certificates for all to authenticated using (true) with check (true);
+drop policy if exists "Public can read gallery items" on public.gallery_items;
+create policy "Public can read gallery items"
+  on public.gallery_items for select to anon, authenticated using (true);
+drop policy if exists "Authenticated users can manage gallery items" on public.gallery_items;
+create policy "Authenticated users can manage gallery items"
+  on public.gallery_items for all to authenticated using (true) with check (true);
 
 grant usage on schema public to anon, authenticated;
 grant select on public.profile, public.social_links, public.projects, public.activities
   to anon, authenticated;
+grant select on public.certificates to anon, authenticated;
+grant select on public.gallery_items to anon, authenticated;
 grant insert, update, delete on public.profile, public.social_links, public.projects, public.activities
   to authenticated;
+grant insert, update, delete on public.certificates to authenticated;
+grant insert, update, delete on public.gallery_items to authenticated;
 
 do $realtime$
 declare
@@ -109,7 +149,7 @@ begin
     raise exception 'Supabase Realtime publication is missing.';
   end if;
 
-  foreach table_name in array array['profile', 'social_links', 'projects', 'activities']
+  foreach table_name in array array['profile', 'social_links', 'projects', 'activities', 'certificates', 'gallery_items']
   loop
     if not exists (
       select 1

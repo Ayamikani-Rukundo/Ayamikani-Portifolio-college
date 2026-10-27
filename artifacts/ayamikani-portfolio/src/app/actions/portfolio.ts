@@ -3,6 +3,8 @@
 import { ACTIVITY_CATEGORIES } from "@/lib/supabase/types";
 import type {
   ActivityInput,
+  CertificateInput,
+  GalleryItemInput,
   ProfileInput,
   ProjectInput,
   SocialLinkInput,
@@ -93,6 +95,35 @@ function validProject(input: ProjectInput) {
 
 function validDate(value: string | null) {
   return value === null || /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function validCertificate(input: CertificateInput) {
+  return (
+    validText(input.title, 160) &&
+    input.title.trim().length > 0 &&
+    validText(input.issuer, 160) &&
+    validText(input.issued_on, 10) &&
+    validDate(input.issued_on) &&
+    validText(input.description, 5000) &&
+    validText(input.file_url, 2048) &&
+    input.file_url.trim().length > 0 &&
+    isHttpUrl(input.file_url) &&
+    validText(input.credential_url, 2048) &&
+    isHttpUrl(input.credential_url) &&
+    typeof input.featured === "boolean" &&
+    validOrder(input.sort_order)
+  );
+}
+
+function validGalleryItem(input: GalleryItemInput) {
+  return (
+    validText(input.image_url, 2048) &&
+    input.image_url.trim().length > 0 &&
+    isHttpUrl(input.image_url) &&
+    validText(input.caption, 2200) &&
+    validDate(input.taken_at) &&
+    validOrder(input.sort_order)
+  );
 }
 
 function validActivity(input: ActivityInput) {
@@ -211,5 +242,65 @@ export async function deleteActivity(id: string): Promise<ActionResult> {
   if (!isUuid(id)) return invalid("That activity could not be found.");
   return runAuthenticatedWrite((supabase) =>
     supabase.from("activities").delete().eq("id", id),
+  );
+}
+
+export async function createCertificate(
+  input: CertificateInput,
+): Promise<ActionResult> {
+  if (!validCertificate(input)) {
+    return invalid("Check the certificate fields and try again.");
+  }
+  return runAuthenticatedWrite((supabase) =>
+    supabase.from("certificates").insert(input),
+  );
+}
+
+export async function updateCertificate(
+  id: string,
+  input: CertificateInput,
+): Promise<ActionResult> {
+  if (!isUuid(id) || !validCertificate(input)) {
+    return invalid("Check the certificate fields and try again.");
+  }
+  return runAuthenticatedWrite((supabase) =>
+    supabase.from("certificates").update(input).eq("id", id),
+  );
+}
+
+export async function deleteCertificate(id: string): Promise<ActionResult> {
+  if (!isUuid(id)) return invalid("That certificate could not be found.");
+  return runAuthenticatedWrite((supabase) =>
+    supabase.from("certificates").delete().eq("id", id),
+  );
+}
+
+export async function createGalleryItem(
+  input: GalleryItemInput,
+): Promise<ActionResult> {
+  if (!validGalleryItem(input)) {
+    return invalid("Check the gallery photo fields and try again.");
+  }
+  return runAuthenticatedWrite((supabase) =>
+    supabase.from("gallery_items").insert(input),
+  );
+}
+
+export async function updateGalleryItem(
+  id: string,
+  input: GalleryItemInput,
+): Promise<ActionResult> {
+  if (!isUuid(id) || !validGalleryItem(input)) {
+    return invalid("Check the gallery photo fields and try again.");
+  }
+  return runAuthenticatedWrite((supabase) =>
+    supabase.from("gallery_items").update(input).eq("id", id),
+  );
+}
+
+export async function deleteGalleryItem(id: string): Promise<ActionResult> {
+  if (!isUuid(id)) return invalid("That gallery photo could not be found.");
+  return runAuthenticatedWrite((supabase) =>
+    supabase.from("gallery_items").delete().eq("id", id),
   );
 }

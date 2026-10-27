@@ -7,7 +7,7 @@ import type { SocialLink } from "@/lib/supabase/types";
 import ThemeToggle from "@/components/theme-toggle";
 import BrandMark from "@/components/brand-mark";
 
-const links = [{ href: "/", label: "Home" }, { href: "/about", label: "About" }, { href: "/projects", label: "Projects" }, { href: "/activities", label: "Activities" }];
+const links = [{ href: "/", label: "Home" }, { href: "/about", label: "About" }, { href: "/projects", label: "Projects" }, { href: "/activities", label: "Activities" }, { href: "/certificates", label: "Certificates" }, { href: "/gallery", label: "Gallery" }];
 export function SiteHeader({ path = "/", avatarUrl }: { path?: string; avatarUrl?: string | null }) {
   const [open, setOpen] = useState(false);
   return <header className="site-header"><div className="shell header-inner">

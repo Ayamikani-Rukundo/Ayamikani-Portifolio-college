@@ -60,6 +60,32 @@ export type Activity = {
 
 export type ActivityInput = Omit<Activity, "id" | "created_at">;
 
+export type Certificate = {
+  id: string;
+  title: string;
+  issuer: string;
+  issued_on: string | null;
+  description: string;
+  file_url: string;
+  credential_url: string;
+  featured: boolean;
+  sort_order: number;
+  created_at: string;
+};
+
+export type CertificateInput = Omit<Certificate, "id" | "created_at">;
+
+export type GalleryItem = {
+  id: string;
+  image_url: string;
+  caption: string;
+  taken_at: string | null;
+  sort_order: number;
+  created_at: string;
+};
+
+export type GalleryItemInput = Omit<GalleryItem, "id" | "created_at">;
+
 export const ACTIVITY_CATEGORIES = [
   "Leadership",
   "Robotics",

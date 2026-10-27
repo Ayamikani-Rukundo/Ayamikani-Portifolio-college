@@ -12,17 +12,20 @@ export function createSupabaseBrowserClient() {
 
 export async function uploadPortfolioFile(
   file: File,
-  folder: "profile" | "about" | "projects" | "activities",
+  folder: "profile" | "about" | "projects" | "activities" | "certificates" | "gallery",
 ) {
   const maxSize = file.type === "application/pdf" ? 8 : 10;
   if (file.size > maxSize * 1024 * 1024) {
     throw new Error(`Choose a file smaller than ${maxSize} MB.`);
   }
+  const allowedImages = ["image/jpeg", "image/png", "image/webp", "image/gif"];
   const allowed =
-    file.type === "application/pdf" ||
-    ["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type);
+    (folder !== "gallery" && file.type === "application/pdf") ||
+    allowedImages.includes(file.type);
   if (!allowed) {
-    throw new Error("Use a JPG, PNG, WebP, GIF, or PDF file.");
+    throw new Error(folder === "gallery"
+      ? "Use a JPG, PNG, WebP, or GIF image."
+      : "Use a JPG, PNG, WebP, GIF, or PDF file.");
   }
 
   const supabase = createSupabaseBrowserClient();

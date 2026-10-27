@@ -57,6 +57,10 @@ After updating the deployed application and applying the SQL changes, keep the s
 
 For an existing Supabase project, run [`supabase/profile-contact-media-migration.sql`](supabase/profile-contact-media-migration.sql) to add the separate About-page portrait, editable time zone, and contact methods. It preserves any non-empty profile details and does not duplicate social links. The `avatar_url` remains the landing-page and navigation profile image; `about_image_url` is used on the About page, which falls back to the profile image until you upload a separate portrait.
 
+To add the certificate library to an existing Supabase project, run [`supabase/certificates-migration.sql`](supabase/certificates-migration.sql) once in the SQL Editor. Do not rerun the full schema on an existing project. Then deploy the app changes and use **Admin → Certificates** to add credentials. PDF and image files upload to the existing public `portfolio` storage bucket; visitors can open each certificate in the on-page viewer or download it.
+
+To add the photo gallery to an existing Supabase project, run [`supabase/gallery-migration.sql`](supabase/gallery-migration.sql) once in the SQL Editor. If you have not already applied the certificate migration, run [`supabase/certificates-migration.sql`](supabase/certificates-migration.sql) as well. Do not rerun the full schema on an existing project. Deploy the app changes and use **Admin → Gallery** to upload photos with a date and caption; visitors can open each post in an image viewer.
+
 The site starts in dark mode. Use the theme control in the public navigation or admin header to switch to light mode; the choice is saved in the current browser.
 
 On the first full page visit in a browser session, a short animated opening screen appears once. Moving between pages does not replay it. Use the **Admin** button in the header to open the private sign-in page. Once an avatar is uploaded and saved in the admin profile, it replaces the initials mark in the public header/footer and admin workspace.
