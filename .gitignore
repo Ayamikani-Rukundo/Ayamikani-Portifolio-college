@@ -5,6 +5,8 @@ dist
 tmp
 out-tsc
 *.tsbuildinfo
+.env.local
+.env.*.local
 .expo
 .expo-shared
 .next

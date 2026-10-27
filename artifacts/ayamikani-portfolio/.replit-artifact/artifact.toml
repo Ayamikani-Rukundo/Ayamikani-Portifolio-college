@@ -1,0 +1,35 @@
+kind = "web"
+previewPath = "/"
+title = "Ayamikani Portfolio"
+description = "A public personal portfolio and private admin workspace for Ayamikani Rukundo Emmanuel, powered by Supabase Auth, Postgres, and Storage."
+version = "1.0.0"
+id = "artifacts/ayamikani-portfolio"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/", "/_next" ]
+localPort = 21595
+
+[services.development]
+run = "pnpm --filter @workspace/ayamikani-portfolio run dev"
+
+[services.production.build]
+args = [ "pnpm", "--filter", "@workspace/ayamikani-portfolio", "run", "build" ]
+
+[services.production.build.env]
+NODE_ENV = "production"
+
+[services.production.run]
+args = [ "pnpm", "--filter", "@workspace/ayamikani-portfolio", "run", "serve" ]
+
+[services.production.run.env]
+PORT = "21595"
+NODE_ENV = "production"
+
+[services.production.health.startup]
+path = "/"
+
+[services.env]
+PORT = "21595"
+BASE_PATH = "/"

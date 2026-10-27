@@ -1,44 +1,47 @@
-# [Project name]
+# Ayamikani Portfolio
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A public personal portfolio and private admin CMS for Ayamikani Rukundo Emmanuel, powered by Supabase.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/ayamikani-portfolio run dev` — run the Next.js portfolio
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required app env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Supabase schema source: `artifacts/ayamikani-portfolio/supabase/schema.sql`
 
 ## Stack
 
-- pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- pnpm workspace, Node.js 24, TypeScript
+- Web: Next.js App Router, Tailwind CSS, Framer Motion
+- Auth, database, and file storage: Supabase only
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/ayamikani-portfolio/src/app/` — public routes and admin routes
+- `artifacts/ayamikani-portfolio/src/lib/supabase/` — Supabase clients, queries, types, and write helpers
+- `artifacts/ayamikani-portfolio/supabase/schema.sql` — idempotent schema and RLS policies
+- `artifacts/ayamikani-portfolio/README.md` — setup and Vercel deployment
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Supabase is the only app data/auth/storage provider; do not add Replit Database or Replit Auth.
+- The public anon key is the only Supabase key used by the app. RLS gates all writes.
+- Portfolio content intentionally starts empty.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Public portfolio pages and a password-protected admin CMS for profile, links, projects, and activities.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Do not hardcode real projects, activities, or awards; the owner adds them in the admin.
+- Do not use a service-role key or public sign-up.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Run the Supabase SQL file in the Supabase SQL Editor before using authenticated data management.
 
 ## Pointers
 
