@@ -10,6 +10,17 @@ export const metadata: Metadata = {
   title: "Ayamikani Rukundo Emmanuel — Builder, learner, neighbor",
   description: "A portfolio of thoughtful technology and community work by Ayamikani Rukundo Emmanuel.",
   icons: { icon: "/icon.svg" },
+  openGraph: {
+    type: "website",
+    title: "Ayamikani Rukundo Emmanuel — Builder, learner, neighbor",
+    description: "A portfolio of thoughtful technology and community work by Ayamikani Rukundo Emmanuel.",
+    siteName: "Ayamikani Rukundo Emmanuel",
+  },
+  twitter: {
+    card: "summary",
+    title: "Ayamikani Rukundo Emmanuel — Builder, learner, neighbor",
+    description: "A portfolio of thoughtful technology and community work by Ayamikani Rukundo Emmanuel.",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {

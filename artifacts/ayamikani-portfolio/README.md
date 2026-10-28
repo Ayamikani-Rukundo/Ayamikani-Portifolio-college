@@ -1,6 +1,6 @@
 # Ayamikani Portfolio
 
-A public portfolio and private admin panel for Ayamikani Rukundo Emmanuel. The app uses Next.js, TypeScript, Tailwind CSS, Framer Motion, and Supabase for Postgres, email/password authentication, and file storage. It does not use Replit Database, Replit Auth, or a service-role key.
+A public portfolio and private admin panel for Ayamikani Rukundo Emmanuel. The app uses Next.js, TypeScript, Tailwind CSS, Framer Motion, and Supabase for Postgres, email/password authentication, and file storage. Supabase Row Level Security protects data access; the app does not require a service-role key.
 
 ## 1. Create a Supabase project
 
