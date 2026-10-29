@@ -76,6 +76,7 @@ create table if not exists public.certificates (
 create table if not exists public.gallery_items (
   id uuid primary key default gen_random_uuid(),
   image_url text not null,
+  image_urls text[] not null default '{}',
   caption text not null default '',
   taken_at date,
   sort_order integer not null default 0,

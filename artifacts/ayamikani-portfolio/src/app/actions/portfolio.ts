@@ -120,6 +120,13 @@ function validGalleryItem(input: GalleryItemInput) {
     validText(input.image_url, 2048) &&
     input.image_url.trim().length > 0 &&
     isHttpUrl(input.image_url) &&
+    Array.isArray(input.image_urls) &&
+    input.image_urls.length > 0 &&
+    input.image_urls.length <= 30 &&
+    input.image_urls.every(
+      (url) => validText(url, 2048) && url.trim().length > 0 && isHttpUrl(url),
+    ) &&
+    input.image_url === input.image_urls[0] &&
     validText(input.caption, 2200) &&
     validDate(input.taken_at) &&
     validOrder(input.sort_order)

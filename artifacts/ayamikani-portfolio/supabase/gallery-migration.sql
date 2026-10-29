@@ -7,11 +7,21 @@ begin;
 create table if not exists public.gallery_items (
   id uuid primary key default gen_random_uuid(),
   image_url text not null,
+  image_urls text[] not null default '{}',
   caption text not null default '',
   taken_at date,
   sort_order integer not null default 0,
   created_at timestamptz not null default now()
 );
+
+alter table public.gallery_items
+  add column if not exists image_urls text[] not null default '{}';
+
+update public.gallery_items
+set image_urls = array[image_url]
+where cardinality(image_urls) = 0
+  and image_url is not null
+  and image_url <> '';
 
 alter table public.gallery_items enable row level security;
 

@@ -78,6 +78,7 @@ export type CertificateInput = Omit<Certificate, "id" | "created_at">;
 export type GalleryItem = {
   id: string;
   image_url: string;
+  image_urls: string[];
   caption: string;
   taken_at: string | null;
   sort_order: number;
