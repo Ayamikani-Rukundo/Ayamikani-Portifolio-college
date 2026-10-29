@@ -30,7 +30,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try { document.documentElement.dataset.theme = localStorage.getItem('portfolio-theme') === 'light' ? 'light' : 'dark'; } catch {} try { if (!sessionStorage.getItem('ayamikani-opening-loader-seen')) { sessionStorage.setItem('ayamikani-opening-loader-seen', '1'); document.documentElement.dataset.showOpeningLoader = 'true'; window.setTimeout(function () { delete document.documentElement.dataset.showOpeningLoader; }, 9000); } } catch {}",
+              "try { document.documentElement.dataset.theme = localStorage.getItem('portfolio-theme') === 'light' ? 'light' : 'dark'; } catch {} try { if (!sessionStorage.getItem('ayamikani-opening-loader-seen')) { sessionStorage.setItem('ayamikani-opening-loader-seen', '1'); document.documentElement.dataset.showOpeningLoader = 'true'; window.setTimeout(function () { delete document.documentElement.dataset.showOpeningLoader; }, 3700); } } catch {}",
           }}
         />
       </head>
