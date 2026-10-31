@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Download, FileText } from "lucide-react";
 import { getPortfolioContent } from "@/lib/supabase/queries";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { activityCategoryClass } from "@/lib/supabase/categories";
@@ -27,6 +27,22 @@ export default async function HomePage() {
         <p className="hero-headline">{headline}</p>
         <p className="hero-description">{bio}</p>
         <div className="hero-actions"><Link href="/projects" className="button primary">See what I’m building <ArrowUpRight size={15}/></Link><Link href="/about" className="button text-button">A little about me <ArrowDownRight size={15}/></Link></div>
+        <div className="resume-card">
+          <span className="resume-card-icon"><FileText size={22} aria-hidden="true"/></span>
+          <div className="resume-card-copy">
+            <span className="eyebrow">A closer look / résumé</span>
+            <strong>Curious about my journey?</strong>
+            <span>Experience, education, and what I’m building toward.</span>
+          </div>
+          <div className="resume-card-actions">
+            <a className="resume-view-link" href="/resume.pdf" target="_blank" rel="noreferrer">
+              Read it <ArrowUpRight size={15} aria-hidden="true"/>
+            </a>
+            <a className="resume-download-link" href="/resume.pdf" download="Ayamikani-Rukundo-Emmanuel-Resume.pdf" aria-label="Download Ayamikani Rukundo Emmanuel’s résumé as a PDF">
+              <Download size={15} aria-hidden="true"/> Download
+            </a>
+          </div>
+        </div>
       </div>
       <div className="hero-art">
         <div className="orbit"/><div className="orbit two"/>
