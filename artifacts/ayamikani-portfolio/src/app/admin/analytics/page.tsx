@@ -12,16 +12,40 @@ type AnalyticsEvent = {
   visited_at: string;
 };
 
-const dayFormatter = new Intl.DateTimeFormat("en", { month: "short", day: "numeric" });
-const timeFormatter = new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" });
+const timeZone = "Africa/Kigali";
+const dayKeyFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+const dayFormatter = new Intl.DateTimeFormat("en", { timeZone, month: "short", day: "numeric" });
+const timeFormatter = new Intl.DateTimeFormat("en", {
+  timeZone,
+  dateStyle: "medium",
+  timeStyle: "short",
+});
+
+function getDayKey(value: Date | string) {
+  const parts = dayKeyFormatter.formatToParts(new Date(value));
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+  return `${year}-${month}-${day}`;
+}
+
+function shiftDayKey(dayKey: string, offset: number) {
+  const [year, month, day] = dayKey.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + offset));
+  return date.toISOString().slice(0, 10);
+}
 
 export default async function AdminAnalyticsPage() {
   if (!isSupabaseConfigured) return <SetupNeeded />;
 
   const supabase = await createSupabaseServerClient();
-  const since = new Date();
-  since.setDate(since.getDate() - 29);
-  since.setHours(0, 0, 0, 0);
+  const todayKey = getDayKey(new Date());
+  const since = new Date(`${shiftDayKey(todayKey, -29)}T00:00:00+02:00`);
 
   await supabase.from("site_analytics_events").delete().lt("visited_at", since.toISOString());
   const { data, error } = await supabase
@@ -33,17 +57,15 @@ export default async function AdminAnalyticsPage() {
 
   const events = (data ?? []) as AnalyticsEvent[];
   const sessions = new Set(events.map((event) => event.session_id));
-  const todayKey = new Date().toISOString().slice(0, 10);
-  const todayViews = events.filter((event) => event.visited_at.slice(0, 10) === todayKey).length;
+  const todayViews = events.filter((event) => getDayKey(event.visited_at) === todayKey).length;
 
   const dailyViews = Array.from({ length: 14 }, (_, index) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (13 - index));
-    const key = date.toISOString().slice(0, 10);
+    const key = shiftDayKey(todayKey, index - 13);
+    const date = new Date(`${key}T12:00:00+02:00`);
     return {
       key,
       label: dayFormatter.format(date),
-      count: events.filter((event) => event.visited_at.slice(0, 10) === key).length,
+      count: events.filter((event) => getDayKey(event.visited_at) === key).length,
     };
   });
   const maximumDailyViews = Math.max(1, ...dailyViews.map((day) => day.count));
@@ -63,7 +85,7 @@ export default async function AdminAnalyticsPage() {
     .slice(0, 6);
 
   return <AdminShell path="/admin/analytics"><div className="admin-content analytics-content">
-    <AdminPageHeading eyebrow="Audience" title="Analytics" description="A simple view of visits to your public portfolio over the last 30 days." />
+    <AdminPageHeading eyebrow="Audience" title="Analytics" description="Visits over the last 30 days. Times are shown in Kigali time (Africa/Kigali)." />
     {error ? <section className="admin-card analytics-setup"><h2>Analytics needs one setup step</h2><p>Run the <code>analytics-migration.sql</code> script from the portfolio Supabase folder, then refresh this page.</p></section> : <>
       <div className="admin-grid analytics-stats">
         <div className="stat"><b>{sessions.size.toLocaleString()}</b><span>Visitor sessions · 30 days</span></div>
