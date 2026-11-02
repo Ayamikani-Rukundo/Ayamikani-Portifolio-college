@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import OpeningLoader from "@/components/opening-loader";
 import NavigationFeedback from "@/components/navigation-feedback";
 import PortfolioLiveSync from "@/components/portfolio-live-sync";
+import AnalyticsTracker from "@/components/analytics-tracker";
 import ViewportFrame from "@/components/viewport-frame";
 import "./globals.css";
 
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body suppressHydrationWarning>
         <OpeningLoader />
         <NavigationFeedback />
+        <AnalyticsTracker />
         <PortfolioLiveSync />
         <ViewportFrame />
         {children}
