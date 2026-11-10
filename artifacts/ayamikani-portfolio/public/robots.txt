@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://ayamikani.vercel.app/sitemap.xml
