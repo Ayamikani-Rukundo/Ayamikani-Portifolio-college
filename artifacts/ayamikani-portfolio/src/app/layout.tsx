@@ -10,6 +10,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Ayamikani Rukundo Emmanuel — Builder, learner, neighbor",
   description: "A portfolio of thoughtful technology and community work by Ayamikani Rukundo Emmanuel.",
+  verification: {
+    google: "OX8io-fNvdzNZ5r79k-STE-CmSuDoT5k4bd29864B_Y",
+  },
   icons: { icon: "/icon.svg" },
   openGraph: {
     type: "website",
